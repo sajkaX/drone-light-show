@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drone Light Show</title>
+    <style>
+        body { background-color: black; color: white; text-align: center; font-family: Arial; }
+        #lights-container { position: relative; width: 100vw; height: 90vh; overflow: hidden; }
+        .light { position: absolute; width: 20px; height: 20px; border-radius: 50%; display: inline-block; animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+    <h1>Drone Light Show</h1>
+    <div id="lights-container"></div>
+    <script>
+        function updateLights(lights) {
+            const container = document.getElementById('lights-container');
+            container.innerHTML = '';
+            lights.forEach(light => {
+                const lightDiv = document.createElement('div');
+                lightDiv.classList.add('light');
+                lightDiv.style.backgroundColor = light.color;
+                lightDiv.style.left = `${light.x}%`;
+                lightDiv.style.top = `${light.y}%`;
+                container.appendChild(lightDiv);
+            });
+        }
+        function fetchLights() {
+            fetch('/drone_lights')
+                .then(response => response.json())
+                .then(data => updateLights(data))
+                .catch(error => console.error(error));
+        }
+        setInterval(fetchLights, 1000);
+    </script>
+</body>
+</html>
